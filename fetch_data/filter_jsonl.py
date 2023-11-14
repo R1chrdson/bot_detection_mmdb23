@@ -1,7 +1,7 @@
-from parse import sample_data_stream
 import json
 from pathlib import Path
 
+from parse import sample_data_stream
 from tqdm import tqdm
 
 DATASET_PATH = Path('data')

@@ -1,10 +1,9 @@
 import json
 from pathlib import Path
 
+from helpers.graceful_killer import GracefulKiller
 from pywikibot.comms.eventstreams import EventStreams
 from tqdm import tqdm
-
-from helpers.graceful_killer import GracefulKiller
 
 DATASET_PATH = Path('data')
 

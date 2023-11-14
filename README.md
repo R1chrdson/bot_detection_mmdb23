@@ -29,7 +29,16 @@ the data stream.**
     - Make your system to work with Spark Streaming (`5%`)
 
 
-## How to use
+## Project structure
+
+The project is divided by folders, related to the each step:
+- `fetch_data` - Scripts to serialize wikipedia changes stream into `.jsonl` files
+- `classify_data` - Analysis, data preparation, and classifier training scripts
+- `bloom_filter` - Implementation and usage of bloom filter
+- `inference` - Application that detects bots in real time using pre-trained bloom filter
+
+
+## How to run demo
 
 ### Docker
 **TODO**
