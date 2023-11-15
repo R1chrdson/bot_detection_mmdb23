@@ -1,3 +1,5 @@
 pywikibot==8.5.0
 sseclient==0.0.27
 tqdm==4.66.1
+mmh3==4.0.1
+bitarray==2.8.3
