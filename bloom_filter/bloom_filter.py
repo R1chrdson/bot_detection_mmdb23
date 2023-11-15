@@ -96,34 +96,3 @@ class BloomFilter:
         """
         k = (m/n) * math.log(2)
         return int(k)
-
-    @classmethod
-    def load(cls, path):
-        """
-        Load a bloom filter from a file
-        """
-        with open(path, 'rb') as f:
-            return cls._from_bytes(cls, f.read())
-
-    def save(self, path):
-        """
-        Save a bloom filter to a file
-        """
-        with open(path, 'wb') as f:
-            f.write(self._to_bytes())
-
-    def _to_bytes(self):
-        """
-        Convert the bloom filter to bytes
-        """
-        return self.bit_array.tobytes()
-
-    def _from_bytes(self, data):
-        """
-        Load a bloom filter from bytes
-        """
-        self.bit_array = bitarray()
-        self.bit_array.frombytes(data)
-        self.size = len(self.bit_array)
-        self.hash_count = self.get_hash_count(self.size, 1)
-        return self
