@@ -3,7 +3,7 @@ Bloom filter implementation
 Source: https://www.geeksforgeeks.org/bloom-filters-introduction-and-python-implementation/
 """
 import math
-
+import json
 import mmh3
 from bitarray import bitarray
 
@@ -96,3 +96,26 @@ class BloomFilter:
         """
         k = (m/n) * math.log(2)
         return int(k)
+
+    def save(self, path):
+        """
+        Save the bloom filter to a file
+        """
+        with open(path, "w") as f:
+            serialized = {
+                "size": self.size,
+                "fp_prob": self.fp_prob,
+                "bit_array": self.bit_array.tobytes().hex(),
+            }
+            json.dump(serialized, f, indent=4)
+
+    @classmethod
+    def load(cls, path):
+        """
+        Load a bloom filter from a file
+        """
+        with open(path, "r") as f:
+            serialized = json.load(f)
+            bf = cls(serialized["size"], serialized["fp_prob"])
+            bf.bit_array.frombytes(bytes.fromhex(serialized["bit_array"]))
+            return bf
