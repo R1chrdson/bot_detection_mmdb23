@@ -36,7 +36,21 @@ The project is divided by folders, related to the each step:
 - `fetch_data` - Scripts to serialize wikipedia changes stream into `.jsonl` files
 - `classify_data` - Analysis, data preparation, and classifier training scripts
 - `bloom_filter` - Implementation and usage of bloom filter
-- `inference` - Application that detects bots in real time using pre-trained bloom filter
+
+
+## Project workflow
+
+The work on this project was separated on the following steps:
+1. **Fetching the data**. You can find scripts to store the data stream in the convenient format in the `fetch_data` folder. We collected two weeks of the data for the further analysis.
+All the data artifacts stored at [Google Drive](https://drive.google.com/drive/u/2/folders/1vpAkqFmd12BfOIcfG-LrjMBAt5EnFt55).
+2. **Data analysis**. We prepared EDA of the data stream and analyzed different distributions of users and bots. The EDA available at [classify_data/eda.ipynb](classify_data/eda.ipynb).
+3. **Bots classification model**.
+    The [classify_data/classifier.ipynb](classify_data/classifier.ipynb) does the following:
+    - Data transformation pipeline that generates aggregated features.
+    - The train, test, validation logic.
+    - The Random Forest model that classifies bots. The model params was selected with grid search cross validation approach.
+4. **Bloom filter training**. We implemented bloom filter which available at [bloom_filter/bloom_filter.py](bloom_filter/bloom_filter.py). The training and params estimation process described in [bloom_filter/train_bloom_filter.ipynb](bloom_filter/train_bloom_filter.ipynb)
+5. **Inference**. The demo that implements real time stream reading and filtering out the bots (according to classified users on validatation data set) using bloom filter is available as [google colab](https://colab.research.google.com/drive/1GCmsU5s-HTEUvZmogIYj5YtKTMVnHVn8?usp=sharing) notebook.
 
 
 ## How to run demo
