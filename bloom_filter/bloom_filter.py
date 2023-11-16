@@ -20,9 +20,6 @@ class BloomFilter:
         fp_prob : float
             False Positive probability in decimal
         """
-        # False possible probability in decimal
-        self.fp_prob = fp_prob
-
         # Size of bit array to use
         self.size = self.get_size(items_count, fp_prob)
 
@@ -35,13 +32,27 @@ class BloomFilter:
         # initialize all bits as 0
         self.bit_array.setall(0)
 
+        self.items_stored = 0
+
     def __str__(self):
-        return f"BloomFilter(size={self.size}, hash_count={self.hash_count}, fp_prob={self.fp_prob})"
+        data = {
+            "size": self.size,
+            "hash_count": self.hash_count,
+            "fp_prob": f'{self.fp_prob:.5f}',
+            "items_stored": self.items_stored,
+        }
+        return f"BloomFilter({data})"
+
+    @property
+    def fp_prob(self):
+        """Returns the false positive probability of the filter according to the number of items stored"""
+        return (1.0 - ((1.0 - 1.0 / self.size) ** (self.hash_count * self.items_stored))) ** self.hash_count
 
     def add(self, item):
         """
         Add an item in the filter
         """
+        self.items_stored += 1
         digests = []
         for i in range(self.hash_count):
 
@@ -79,8 +90,10 @@ class BloomFilter:
         p : float
             False Positive probability in decimal
         """
+        # Increase n by 1, to garantee false positive rate is lower than p
+        n += 1
         m = -(n * math.log(p))/(math.log(2)**2)
-        return int(m)
+        return math.ceil(m)
 
     @classmethod
     def get_hash_count(self, m, n):
