@@ -1,23 +1,25 @@
 import json
 from pathlib import Path
 
-from parse import sample_data_stream
 from tqdm import tqdm
-
+import pandas as pd
 DATASET_PATH = Path('data')
 
+
 def main():
+    validation_set = pd.read_csv('data/validation_set_transformed.csv')
+    whitelist_users = set(validation_set['user'].tolist())
+    dataset_in_file = DATASET_PATH / 'dataset_2weeks.jsonl'
+    dataset_out_file = DATASET_PATH / 'dataset_validation_stream.jsonl'
     with (
-        open(DATASET_PATH / 'dataset_week.jsonl') as infile,
-        tqdm() as pbar
+        open(dataset_in_file) as infile,
+        open(dataset_out_file, 'w') as outfile,
     ):
-        for line in infile:
+        for line in tqdm(infile, total=sum(1 for _ in open(dataset_in_file))):
             change = json.loads(line)
-            if sample_data_stream(change):
-                with open(DATASET_PATH / 'dataset_week20_1.jsonl', 'a') as outfile:
-                    json.dump(change, outfile)
-                    outfile.write('\n')
-            pbar.update()
+            if (change['user'] in whitelist_users):
+                json.dump(change, outfile)
+                outfile.write('\n')
 
 
 if __name__ == "__main__":
