@@ -1,6 +1,7 @@
 # Detecting bots in wikipedia streaming data
 ### *Mining Massive Databases Final Project*
 
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1GCmsU5s-HTEUvZmogIYj5YtKTMVnHVn8?usp=sharing)
 
 ## The team
 - Olena Ivina, ivina.pn@ucu.edu.ua
@@ -40,8 +41,8 @@ The project is divided by folders, related to the each step:
 
 ## How to run demo
 
-### Docker
-**TODO**
+The demo includes initialization of pre-trained bloom filter and running it on either validation sampled stream or real time stream data.
 
-### Google Colab
-**TODO**
+The demo is available in the colab:
+
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/drive/1GCmsU5s-HTEUvZmogIYj5YtKTMVnHVn8?usp=sharing)
