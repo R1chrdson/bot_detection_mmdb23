@@ -2,8 +2,10 @@
 Bloom filter implementation
 Source: https://www.geeksforgeeks.org/bloom-filters-introduction-and-python-implementation/
 """
-import math
 import json
+import math
+from typing import Optional
+
 import mmh3
 from bitarray import bitarray
 
@@ -13,18 +15,40 @@ class BloomFilter:
     Class for Bloom filter, using murmur3 hash function
     """
 
-    def __init__(self, items_count, fp_prob):
+    def __init__(self,
+        size: Optional[int] = None,
+        num_hashes: Optional[int] = None,
+        fp_prob: Optional[float] = None,
+        items_count: Optional[float] = None,
+    ):
         """
+        size : int
+            Size of bit array to use
+        num_hashes : int
+            Number of hash functions to use
         items_count : int
             Number of items expected to be stored in bloom filter
         fp_prob : float
             False Positive probability in decimal
+
+        - You can declare size manually or pass items_count and fp_prob to calculate it
+        - You can declare num_hashes manually or pass size and items_count to calculate it
+            (size can be calculated from items_count and fp_prob)
         """
+
+        if size is None:
+            assert items_count is not None and fp_prob is not None, \
+                "You must specify either size or items_count and fp_prob"
+
+        if num_hashes is None:
+            assert items_count is not None, \
+                "You must specify either num_hashes, or size and items_count or items_count and fp_prob"
+
         # Size of bit array to use
-        self.size = self.get_size(items_count, fp_prob)
+        self.size = size if size is not None else self.get_size(items_count, fp_prob)
 
         # number of hash functions to use
-        self.hash_count = self.get_hash_count(self.size, items_count)
+        self.hash_count = num_hashes if num_hashes is not None else self.get_hash_count(self.size, items_count)
 
         # Bit array of given size
         self.bit_array = bitarray(self.size)
@@ -117,8 +141,9 @@ class BloomFilter:
         with open(path, "w") as f:
             serialized = {
                 "size": self.size,
-                "fp_prob": self.fp_prob,
+                "num_hashes": self.hash_count,
                 "bit_array": self.bit_array.tobytes().hex(),
+                "items_stored": self.items_stored,
             }
             json.dump(serialized, f, indent=4)
 
@@ -129,6 +154,9 @@ class BloomFilter:
         """
         with open(path, "r") as f:
             serialized = json.load(f)
-            bf = cls(serialized["size"], serialized["fp_prob"])
+            bf = cls(size=serialized["size"], num_hashes=serialized["num_hashes"])
+            bf.bit_array = bitarray()
             bf.bit_array.frombytes(bytes.fromhex(serialized["bit_array"]))
+            bf.bit_array = bf.bit_array[:bf.size]
+            bf.items_stored = serialized["items_stored"]
             return bf
